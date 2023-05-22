@@ -34,7 +34,7 @@ export async function shortenUrl(req, res) {
       }' WHERE id='${user.rows[0].userId}'`
     );
 
-    res.send({
+    res.status(201).send({
       id: shortUrl.rows[shortUrl.rows.length - 1].id,
       shortUrl: shortUrl.rows[shortUrl.rows.length - 1].shortUrl,
     });
