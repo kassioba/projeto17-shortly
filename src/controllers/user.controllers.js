@@ -96,6 +96,7 @@ export async function getRanking(req, res) {
 	      LEFT JOIN urls ON users.id = urls."userId"
 	      GROUP BY users.id, users.name, users."linksCount"
          ORDER BY SUM(COALESCE("visitCount", 0)) DESC
+            LIMIT 10
       `);
 
     const resFormat = [];
