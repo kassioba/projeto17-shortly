@@ -27,11 +27,17 @@ export async function userSignIn(req, res){
     const token = uuid()
 
     try{
-       const userId = await db.query(`SELECT "id" FROM users WHERE "email"='${email}'`)
+       const user = await db.query(
+         `SELECT * FROM users WHERE "email"='${email}'`
+       );
 
-       if(!userId.rows[0]) return res.sendStatus(401)
+       if (!user.rows[0]) return res.sendStatus(401);
 
-        await db.query(`INSERT INTO sessions (token, userId) VALUES ('${token}', '${userId.rows[0].id}')`)
+       if (user.rows[0].password !== password) return res.sendStatus(401);
+
+       await db.query(
+         `INSERT INTO sessions (token, "userId") VALUES ('${token}', '${user.rows[0].id}')`
+       );
 
        res.send({token})
     }catch(err){
