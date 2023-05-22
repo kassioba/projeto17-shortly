@@ -8,17 +8,31 @@ export async function shortenUrl(req, res){
     if(!token) return res.sendStatus(401)
 
     try{
-        const user = await db.query(`SELECT userId FROM sessions WHERE "token"='${token}'`)
+        const user = await db.query(
+          `SELECT "userId" FROM sessions WHERE "token"='${token}'`
+        );
 
-        if(!user.rows[0]) return res.sendStatus(401)
+        if (!user.rows[0]) return res.sendStatus(401);
 
-        await db.query(`INSERT INTO urls (userId, url, shortUrl) VALUES ('${user.rows[0].userid}', '${url}', '${nanoid()}')`)
+        await db.query(
+          `INSERT INTO urls ("userId", url, "shortUrl") VALUES ('${
+            user.rows[0].userid
+          }', '${url}', '${nanoid()}')`
+        );
 
-        const shortUrl = await db.query(`SELECT id, shortUrl FROM urls WHERE url='${url}'`)
+        const shortUrl = await db.query(
+          `SELECT id, "shortUrl" FROM urls WHERE url='${url}'`
+        );
 
-        const userData = await db.query(`SELECT linksCount FROM users WHERE id='${user.rows[0].userid}'`)
+        const userData = await db.query(
+          `SELECT "linksCount" FROM users WHERE id='${user.rows[0].userid}'`
+        );
 
-        await db.query(`UPDATE users SET linksCount='${userData.rows[0].linkscount + 1}' WHERE id='${user.rows[0].userid}'`)
+        await db.query(
+          `UPDATE users SET "linksCount"='${
+            userData.rows[0].linkscount + 1
+          }' WHERE id='${user.rows[0].userid}'`
+        );
 
         res.send({
             id: shortUrl.rows[shortUrl.rows.length - 1].id,
