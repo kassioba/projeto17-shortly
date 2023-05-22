@@ -8,6 +8,12 @@ export async function userSignUp(req, res){
    if(password !== confirmPassword) return res.sendStatus(422)
    
     try{
+         const checkEmail = await db.query(
+           `SELECT * FROM users WHERE email='${email}'`
+         );
+
+         if (checkEmail.rows[0]) return res.sendStatus(409);
+
         await db.query(`INSERT INTO "users" (email, name, password) VALUES ('${email}', '${name}', '${password}');`)
 
         res.sendStatus(201);
