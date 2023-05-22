@@ -10,7 +10,7 @@ export async function userSignUp(req, res){
     try{
         await db.query(`INSERT INTO "users" (email, name, password) VALUES ('${email}', '${name}', '${password}');`)
 
-        res.sendStatus(200)
+        res.sendStatus(201);
    } catch(err){
         res.status(500).send(err.message)
    }
